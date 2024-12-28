@@ -1,0 +1,47 @@
+from news.models import *
+
+user1 = User.objects.create_user('Vova')   
+user2 = User.objects.create_user('Sveta') 
+
+author1 = Author.objects.create(user = user1)
+author2 = Author.objects.create(user = user2) 
+
+category1 = Category.objects.create(name = 'Books')
+category2 = Category.objects.create(name = 'Games')
+category3 = Category.objects.create(name = 'Cars')
+category4 = Category.objects.create(name = 'Girls')
+
+post1 = Post.objects.create(post_type ='AR' , author= author1, text = 'Стратегии рулят, особенно 3 Герои')
+post2 = Post.objects.create(post_type ='NW' , author= author2, text = 'В продаже скоро появится сборник стихотворений Пушкина и Есенина')
+post3 = Post.objects.create(post_type ='AR' , author= author1, text = 'Девушки и тачки, гремучая смесь')
+
+post1.categories.add(category2)
+post2.categories.add(category1)
+post3.categories.add(category3)
+post3.categories.add(category4)
+
+comment1 = Comment.objects.create(post = post1, user = user2, text = 'Отличная игра')
+comment2 = Comment.objects.create(post = post1, user = user1, text = 'Мне тоже нравится')
+comment3 = Comment.objects.create(post = post2, user = user1, text = 'Интересная подборка')
+comment4 = Comment.objects.create(post = post3, user = user2, text = 'Я не согласна')
+comment5 = Comment.objects.create(post = post3, user = user1, text = 'Это твои проблемы')
+
+post1.like()
+post3.dislike()
+
+comment1.like()
+comment2.like()
+comment3.like()
+comment5.dislike()
+
+author1.update_rating()
+author2.update_rating()
+
+Author.objects.all().order_by('-rating').values('user__username', 'rating')[0]
+
+best_post = Post.objects.order_by('-rating').first()
+best_post.preview()
+Post.objects.all().order_by('-rating').values('date_in', 'author__user__username', 'rating', 'title')[0]  
+
+best_user_post = Comment.objects.filter(post=Post.objects.order_by('-rating').first()).values('date_in','user__username','rating','text')
+print(best_user_post)
