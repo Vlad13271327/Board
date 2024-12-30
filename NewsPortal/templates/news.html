@@ -20,7 +20,7 @@ News
            <tr>
                <td>{{ post.title|censor }}</td>
                <td>{{ post.date_in|date:'d M Y' }}</td>
-               <td>{{ post.text|truncatechars:20|censor }}</td>
+               <td>{{ post.text|truncatechars:21|censor }}</td>
            </tr>
            {% endfor %}
        </table>
