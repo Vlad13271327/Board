@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.yandex',
+    'allauth.socialaccount.providers.yandex',
 ]
 
 SITE_ID = 1
@@ -161,3 +161,13 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_FORMS = {'signup': 'sign.forms.BasicSignupForm'}
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     "yandex": {
+#         "APPS": {
+#                 "client_id": "d969113fac594a0c9f9493d827f892ef",
+#                 "secret": "b918cadda82543f59a4ca3491dbc4c2c",
+#                 "key": "",
+#                 }
+#             }
+#         }
