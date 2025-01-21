@@ -9,26 +9,30 @@ Posts
 {% endblock title %}
 
 {% block content %}
-   <h1>Все статьи: {{ posts|length }} </h1>
+   <h1>Все статьи категории {{ category }}: {{ category_list|length }} </h1>
+
+    {% if is_not_subscriber %}
+        <a href="{% url 'subscribe' category.id %}">Подписаться</a>
+    {% endif %}
+
    <hr>
-   {% if posts %}
+
+   {% if category_list %}
        <table>
            <tr>
                <td>Заголовок</td>
                <td>Дата публикации</td>
-               <td>Категория:</td>
-               <td>Тип публикации:</td>
                <td>Текст</td>
+               <td>Категория статьи</td>
            </tr>
-           {% for post in posts %}
+           {% for post in category_list %}
            <tr>
                <td>{{ post.title|censor }}</td>
                <td>{{ post.date_in|date:'d M Y' }}</td>
+               <td>{{ post.text|truncatechars:21|censor }}</td>
                <td>{% for category in post.category.all %}
                         <a href="{% url 'category_list' category.id %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
                    {% endfor %}</td>
-               <td>{{ post.post_type}}</td>
-               <td>{{ post.text|truncatechars:21|censor }}</td>
            </tr>
            {% endfor %}
 

@@ -14,5 +14,6 @@ class PostForm(forms.ModelForm):
             'title',
             'text',
             'author',
-            'post_type'
+            'post_type',
+            'category'
         ]

@@ -18,8 +18,11 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=55, unique=True)
+    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='subscribed_categories')
 
+    def __str__(self):
+        return self.name
 
 class Post(models.Model):
     ARTICLE = 'AR'
@@ -35,7 +38,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     text = models.TextField()
     rating = models.IntegerField(default=0)
-    categories = models.ManyToManyField(Category, through='PostCategory')
+    category = models.ManyToManyField(Category, through='PostCategory')
 
     def like(self):
         self.rating += 1
