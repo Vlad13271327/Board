@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
 from django.views.generic.edit import CreateView
 from .forms import BaseRegisterForm
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 
-# from news.models import Author
+from news.models import Author
 
 
 class BaseRegisterView(CreateView):
@@ -19,5 +19,5 @@ def upgrade_me(request):
     authors_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         authors_group.user_set.add(user)
-    # Author.objects.create(authorUser=user)
+    Author.objects.create(user=user)
     return redirect('/')

@@ -1,9 +1,13 @@
 import logging
-import datetime
+
 from django.conf import settings
 from news.models import Post, Category
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+# from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
+from django.core.mail import send_mail
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -14,32 +18,22 @@ from django_apscheduler.models import DjangoJobExecution
 logger = logging.getLogger(__name__)
 
 
-# наша задача по выводу текста на экран
-def my_job():
-    #  Your job processing logic here...
-    today = datetime.datetime.now()
-    last_week = today - datetime.timedelta(days=7)
-    posts = Post.objects.filter(date_in__gte=last_week)
-    categories = set(posts.values_list('category__name', flat=True))
-    subscribers = set(Category.objects.filter(name__in=categories).values_list('subscribers__email', flat=True))
+def my_job():  # send_weekly_posts
+    one_week_ago = timezone.now() - timedelta(days=7)
+    posts = Post.objects.filter(date_in__gte=one_week_ago)
+    categories = posts.values_list('category__name', flat=True)
+    subscribers_email = set(Category.objects.filter(name__in=categories).values_list('subscribers__email', flat=True))
 
-    html_content = render_to_string(
-        'email/weekly_summery.html',
-        {
-            'link': settings.SITE_URL,
-            'posts': posts,
-        }
-    )
+    html_message = render_to_string('weekly_summery.html', {'recent_posts': posts})
+    text_message = strip_tags(html_message)
 
-    msg = EmailMultiAlternatives(
-        subject='Статьи за неделю',
-        body='',
+    send_mail(
+        subject='Еженедельная рассылка новостей',
+        message=text_message,  # Текстовая версия
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=subscribers,
+        recipient_list=subscribers_email,
+        html_message=html_message,  # HTML-версия
     )
-
-    msg.attach_alternative(html_content, 'text/html')
-    msg.send()
 
 
 # функция, которая будет удалять неактуальные задачи

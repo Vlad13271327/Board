@@ -4,7 +4,7 @@ from .models import Post, Author
 
 class PostForm(forms.ModelForm):
     author = forms.ModelChoiceField(
-        queryset=Author.objects.all(),
+        queryset=Author.objects.select_related('user'),
         empty_label='Автор не выбран',
     )
 

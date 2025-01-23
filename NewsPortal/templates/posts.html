@@ -22,13 +22,13 @@ Posts
            </tr>
            {% for post in posts %}
            <tr>
-               <td>{{ post.title|censor }}</td>
+               <td>{{ post.title|truncatechars:21|censor }}</td>
                <td>{{ post.date_in|date:'d M Y' }}</td>
                <td>{% for category in post.category.all %}
                         <a href="{% url 'category_list' category.id %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
                    {% endfor %}</td>
                <td>{{ post.post_type}}</td>
-               <td>{{ post.text|truncatechars:21|censor }}</td>
+               <td>{{ post.text|truncatechars:35|censor }}</td>
            </tr>
            {% endfor %}
 
