@@ -4,7 +4,6 @@ from django.conf import settings
 from news.models import Post, Category
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-# from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
@@ -18,7 +17,7 @@ from django_apscheduler.models import DjangoJobExecution
 logger = logging.getLogger(__name__)
 
 
-def my_job():  # send_weekly_posts
+def send_weekly_posts():
     one_week_ago = timezone.now() - timedelta(days=7)
     posts = Post.objects.filter(date_in__gte=one_week_ago)
     categories = posts.values_list('category__name', flat=True)
@@ -51,14 +50,14 @@ class Command(BaseCommand):
 
         # добавляем работу нашему задачнику
         scheduler.add_job(
-            my_job,
-            trigger=CronTrigger(day_of_week='sun', hour='10', minute='00'),
+            send_weekly_posts,
+            trigger=CronTrigger(day_of_week='mon', hour='08', minute='00'),
             # То же, что и интервал, но задача тригера таким образом более понятна django
-            id="my_job",  # уникальный айди
+            id="send_weekly_posts",  # уникальный айди
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Added job 'send_weekly_posts'.")
 
         scheduler.add_job(
             delete_old_job_executions,
