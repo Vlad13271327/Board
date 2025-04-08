@@ -70,6 +70,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'NewsPortal.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
